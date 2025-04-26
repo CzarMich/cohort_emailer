@@ -1,0 +1,38 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore Git metadata
+.git
+.gitignore
+
+# Ignore local development files
+.env
+.env.*
+*.db
+*.sqlite
+*.log
+
+# Ignore editor/IDE files
+.vscode/
+.idea/
+*.swp
+
+# Ignore test and result artifacts
+aql_response.json
+*.csv
+
+# Optional: ignore Docker-related files if not needed in container
+Dockerfile
+docker-compose.yml
+run.sh
+README.md
+requirements.txt
+
+config/.env
+data/
+aql_response.json
+settings.yml
+config/settings.yml

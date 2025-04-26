@@ -1,0 +1,57 @@
+aql:
+  base_query: |
+    SELECT
+      c/uid/value AS composition_id, 
+      v/commit_audit/time_committed/value AS TimeCommitted,
+      e/ehr_status/subject/external_ref/id/value AS subject_id,
+      c/context/other_context[at0001]/items[at0005]/value/value as consent_status,
+      c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[at0001]/value/value as consent_type,
+      c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[openEHR-EHR-CLUSTER.policy.v1]/items[at0005]/value/value as provision_type
+    FROM EHR e
+    CONTAINS VERSION v
+    CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]
+    WHERE c/name/value='Consents' 
+    AND c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[at0001]/value/value LIKE "Global*"
+    AND v/commit_audit/time_committed/value <='{start_time}'
+    AND v/commit_audit/time_committed/value < '{end_time}'
+    OFFSET 0 LIMIT 10
+
+openehr:
+  url: ${OPENEHR_URL}
+  username: ${OPENEHR_USERNAME}
+  password: ${OPENEHR_PASSWORD}
+
+email:
+  exchange:
+    server: ${EXCHANGE_SERVER}
+    username: ${EXCHANGE_USERNAME}
+    password: ${EXCHANGE_PASSWORD}
+    sender: ${EXCHANGE_SENDER}
+
+  subject: 'Project Data Export - {default_start}'
+  body: |
+    Hello,
+    This is an automated email from the DataBank.
+    Find attached the data export for your project for the period:
+    From: {default_start}  To:   {now}
+
+    Regards,
+    System
+  routing:
+    - field: "consent_type"
+      values: ["1*", "1"]
+      recipient: "recepient.1@email.eu"
+  
+    - field: "consent_type"
+      values: ["2*", "3*"]
+      recipient: "recepient.2@email.com"
+
+job:
+  db_path: "data/results.db"
+  default_start: "2025-01-01T00:00:00Z"
+  default_end: "2025-03-02T00:00:00Z"
+  use_end_time: false
+  interval_hours: 3   
+  polling: false
+  polling_hours: 23          # Defines time window from start_time
+

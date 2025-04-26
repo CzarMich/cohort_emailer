@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  aql_mailer:
+    image: aql-mailer:latest
+    container_name: cohort_data_mailer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - config/.env
+    volumes:
+      - ./data:/app/data
+      - ./config/settings.yml:/app/config/settings.yml
+      - ./config/.env:/app/config/.env
+      # - ./logs:/app/logs
+    labels:
+      maintainer: "Michael Anywar <michael.anywar@alpamax.eu>"
+      project: "AQL Email Dispatcher"
+    restart: unless-stopped

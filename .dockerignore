@@ -10,7 +10,7 @@ __pycache__/
 
 # Ignore local development files
 .env
-.env.*
+#env.*
 *.db
 *.sqlite
 *.log
@@ -25,14 +25,14 @@ aql_response.json
 *.csv
 
 # Optional: ignore Docker-related files if not needed in container
-Dockerfile
-docker-compose.yml
-run.sh
-README.md
-requirements.txt
+#Dockerfile
+#docker-compose.yml
+#run.sh
+#README.md
+#requirements.txt
 
 config/.env
 data/
 aql_response.json
 settings.yml
-config/settings.yml
+#config/settings.yml

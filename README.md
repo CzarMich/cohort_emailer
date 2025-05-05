@@ -1,6 +1,6 @@
 # 🔄 AQL Email Dispatcher
 
-This project allows automated execution of AQL queries against an openEHR server, dynamically filters the result set based on Cohort requirements and routes the filtered data to email recipients via Microsoft Exchange.
+This project allows automated execution of AQL queries against an openEHR server, dynamically filters the result set based on Cohort requirements, and routes the filtered data to email recipients via Microsoft Exchange.
 
 ---
 
@@ -19,21 +19,19 @@ This project allows automated execution of AQL queries against an openEHR server
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/aql-mailer.git
-cd aql-mailer
+git clone https://github.com/CzarMich/cohort_emailer.git
+cd cohort_emailer
 ```
 
 ---
 
 ### 2. Create `.env` File
 
-Copy the example and fill in your credentials:
-
 ```bash
 cp config/.env.example config/.env
 ```
 
-Edit `config/.env` and set values:
+Edit the file to provide your credentials:
 
 ```env
 # openEHR Server
@@ -52,7 +50,7 @@ EXCHANGE_SENDER=your_email@domain.com
 
 ### 3. Modify `config/settings.yml`
 
-Update the following to match your use case:
+Update key parameters:
 
 | Section              | Field              | Description                             |
 |----------------------|--------------------|-----------------------------------------|
@@ -60,82 +58,17 @@ Update the following to match your use case:
 | `email.routing`      | `field`, `values`  | Routing rules per recipient             |
 | `job.default_start`  | DateTime string    | When to begin data pulling              |
 | `job.interval_hours` | Integer            | Time between query runs (in hours)      |
-| `job.use_end_time`   | true / false       | Whether to inject end_time placeholder  |
+| `job.use_end_time`   | true / false       | Whether to inject `end_time` placeholder|
 
 ---
 
-### 4. Run Locally
-
-Activate your Python environment and run:
+### 4. Run Locally (Dev Mode)
 
 ```bash
-python project.py
+python src/project.py
 ```
 
----
-
-## 🐳 Docker Deployment
-
-### 1. Build Docker Image
-
-```bash
-docker build -t aql-mailer .
-```
-
-### 2. Run Docker Container
-
-```bash
-docker run --env-file config/.env aql-mailer
-```
-
-If you want to persist the SQLite database between runs:
-
-```bash
-docker run --env-file config/.env -v $(pwd)/data:/app/data aql-mailer
-```
-
----
-
-### Optional: Use Docker Compose
-
-You can use the included `docker-compose.yml` to simplify deployment:
-
-```yaml
-version: '3.8'
-services:
-  aql_mailer:
-    build: .
-    container_name: cohort_data_mailer
-    env_file:
-      - config/.env
-    volumes:
-      - ./data:/app/data
-    restart: unless-stopped
-```
-
-Then run:
-
-```bash
-docker compose up --build
-```
-
----
-
-## 🔁 Scheduling with Cron
-
-To schedule the job every 3 hours, you can add a cron entry like:
-
-```cron
-0 */3 * * * cd /path/to/aql-mailer && docker run --rm --env-file config/.env -v $(pwd)/data:/app/data aql-mailer
-```
-
-Make sure your cron environment has access to Docker.
-
----
-
-## 📄 Requirements
-
-Install dependencies manually (if not using Docker):
+Make sure you activate your virtual environment and have dependencies installed:
 
 ```bash
 pip install -r requirements.txt
@@ -143,9 +76,85 @@ pip install -r requirements.txt
 
 ---
 
+## 🐳 Docker Deployment
+
+### Option 1: Run using Docker Hub image
+
+You can run directly using the published image:
+
+```bash
+docker pull anywarmichael/cohort_mailer:latest
+```
+
+```bash
+docker run --rm \
+  --env-file ./config/.env \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/config/settings.yml:/app/config/settings.yml \
+  anywarmichael/cohort_mailer:latest
+```
+
+### Option 2: Build Locally (Optional)
+
+If you prefer building your own image:
+
+```bash
+docker build -t cohort_mailer .
+```
+
+Then run it as above.
+
+---
+
+### 🔧 Docker Compose (Recommended)
+
+```yaml
+version: '3.8'
+
+services:
+  aql_mailer:
+    image: anywarmichael/cohort_mailer:latest
+    container_name: cohort_data_mailer
+    env_file:
+      - config/.env
+    volumes:
+      - ./data:/app/data
+      - ./config/settings.yml:/app/config/settings.yml
+      - ./config/.env:/app/config/.env
+    labels:
+      maintainer: "Michael Anywar <michael.anywar@alpamax.eu>"
+      project: "AQL Email Dispatcher"
+    restart: unless-stopped
+```
+
+Start with:
+
+```bash
+docker compose up -d
+```
+
+---
+
+## 🔁 Scheduling with Cron
+
+To run the job every 3 hours using Docker instead of the internal polling, set polling: false, then create the following cron:
+bash# crontab -e
+```cron
+0 */3 * * * docker run --rm \
+  --env-file /opt/cohort_emailer/config/.env \
+  -v /opt/cohort_emailer/data:/app/data \
+  -v /opt/cohort_emailer/config/settings.yml:/app/config/settings.yml \
+  anywarmichael/cohort_mailer:latest
+```
+
+Make sure paths are correct and Docker is available to the cron job.
+
+---
+
 ## 💠 Maintained By
 
 Michael Anywar  
-michael.anywar@alpamax.eu
+💼 michael.anywar@alpamax.eu  
+🌐 [alpamax.eu](https://www.alpamax.eu)
 
 ---

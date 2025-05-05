@@ -8,12 +8,12 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - config/.env
+      - /opt/cohort_emailer/config/.env   # External .env path
     volumes:
-      - ./data:/app/data
-      - ./config/settings.yml:/app/config/settings.yml
-      - ./config/.env:/app/config/.env
-      # - ./logs:/app/logs
+      - /opt/cohort_emailer/data:/app/data                 # External DB folder
+      - /opt/cohort_emailer/config/settings.yml:/app/config/settings.yml  # External settings
+      - /opt/cohort_emailer/config/.env:/app/config/.env                   # Bind .env for internal access
+      # - /opt/cohort_emailer/logs:/app/logs             # optional logs
     labels:
       maintainer: "Michael Anywar <michael.anywar@alpamax.eu>"
       project: "AQL Email Dispatcher"

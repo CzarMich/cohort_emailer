@@ -1,26 +1,26 @@
-# Dockerfile
-FROM python:3.9-slim
+FROM python:3.13-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies first (to cache better)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies for pip + compilation (alpine is minimal!)
+RUN apk add --no-cache build-base libffi-dev openssl-dev
 
-# Copy source code and config
+# Copy and install requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copy app source code
 COPY src/ ./src/
 COPY config/settings.yml ./config/settings.yml
-
-# Provide fallback .env file only if not mounted externally
 COPY config/.env.example ./config/.env
 
-# Precompile all Python files in src to .pyc and remove source .py files
+# Pre-compile to .pyc and remove .py
 RUN python -m compileall -b ./src \
  && find ./src -name "*.py" -delete
 
-# Create a writable data folder, but lock down source code
-RUN mkdir -p /app/data && chmod -R a-w ./src
+# Create writable data folder and lock down source
+RUN mkdir -p /app/data /app/logs && chmod -R a-w ./src
 
-# Default command
 CMD ["python", "src/project.py"]

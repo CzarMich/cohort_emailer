@@ -3,11 +3,11 @@
 # 🟢 AQL Email Dispatcher - Docker Run Script
 # Ensures required config files are present before launching the container
 
-# Resolve absolute paths
-PROJECT_DIR=$(pwd)
-ENV_FILE="$PROJECT_DIR/config/.env"
-SETTINGS_FILE="$PROJECT_DIR/config/settings.yml"
-DATA_DIR="$PROJECT_DIR/data"
+# Resolve script base directory even when run via cron or from another location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/config/.env"
+SETTINGS_FILE="$SCRIPT_DIR/config/settings.yml"
+DATA_DIR="$SCRIPT_DIR/data"
 
 # 🔍 Check for required files
 if [ ! -f "$ENV_FILE" ]; then
@@ -28,4 +28,4 @@ docker run --rm \
   -v "$DATA_DIR":/app/data \
   aql-mailer
 
-# 🛠 Maintained by Michael Anywar | michael.anywar@uksh.de
+# 🛠 Maintained by Michael Anywar | michael.anywar@alpamax.eu

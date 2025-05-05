@@ -19,7 +19,7 @@ This project allows automated execution of AQL queries against an openEHR server
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/CzarMich/cohort_emailer.git
+git clone https://github.com/alpamax/cohort_emailer.git
 cd cohort_emailer
 ```
 

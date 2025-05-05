@@ -83,7 +83,7 @@ pip install -r requirements.txt
 You can run directly using the published image:
 
 ```bash
-docker pull anywarmichael/cohort_mailer:latest
+docker pull alpamaxeu/cohort_mailer:latest
 ```
 
 ```bash
@@ -91,7 +91,7 @@ docker run --rm \
   --env-file ./config/.env \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/config/settings.yml:/app/config/settings.yml \
-  anywarmichael/cohort_mailer:latest
+  alpamaxeu/cohort_mailer:latest
 ```
 
 ### Option 2: Build Locally (Optional)
@@ -113,7 +113,7 @@ version: '3.8'
 
 services:
   aql_mailer:
-    image: anywarmichael/cohort_mailer:latest
+    image: alpamaxeu/cohort_mailer:latest
     container_name: cohort_data_mailer
     env_file:
       - config/.env
@@ -144,7 +144,7 @@ bash# crontab -e
   --env-file /opt/cohort_emailer/config/.env \
   -v /opt/cohort_emailer/data:/app/data \
   -v /opt/cohort_emailer/config/settings.yml:/app/config/settings.yml \
-  anywarmichael/cohort_mailer:latest
+  alpamaxeu/cohort_mailer:latest
 ```
 
 Make sure paths are correct and Docker is available to the cron job.

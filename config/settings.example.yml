@@ -39,12 +39,12 @@ email:
     TransferStelle System
   routing:
     - field: "consent_type"
-      values: ["1*", "UKSH"]
-      recipient: "michael.anywar@alpamax.eu"
+      values: ["1*", "alpamax"]
+      recipient: "ar@alpamax.eu"
   
     - field: "consent_type"
-      values: ["2*", "UKSH*"]
-      recipient: "anywar.michael@live.com"
+      values: ["2*", "alpamax*"]
+      recipient: "anywar@live.com"
 
 job:
   db_path: "data/results.db"

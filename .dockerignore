@@ -35,4 +35,37 @@ config/.env
 data/
 aql_response.json
 settings.yml
-#config/settings.yml
+config/settings.yml
+
+# 🐍 Python Cache & Compiled Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# 🧪 Test artifacts
+.coverage
+.tox/
+.cache/
+.pytest_cache/
+
+# 🧪 Test artifacts
+.coverage
+.tox/
+.cache/
+.pytest_cache/
+
+# 🪵 Logs
+logs/
+*.log
+
+# 🏗️ Build artifacts
+dist/
+build/
+*.egg-info/
+
+# 💻 IDE configs
+.vscode/
+.idea/
+.DS_Store

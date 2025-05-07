@@ -1,5 +1,5 @@
-from src.config import load_config, get_job_config, get_email_templates
-from src.utils import (
+from config import load_config, get_job_config, get_email_templates
+from utils import (
     init_db,
     get_last_run_time,
     update_last_run_time,

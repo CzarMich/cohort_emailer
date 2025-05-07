@@ -104,12 +104,18 @@ def run_aql(aql_query, ehr_url, username, password):
         return [{"name": col} for col in columns], rows
 
     except requests.exceptions.HTTPError as http_err:
-        print(f"❌ AQL HTTP error: {http_err}\n{response.text}")
+        try:
+            error_json = response.json()
+            message = (
+                error_json.get("userMessage")
+                or error_json.get("exceptionMessage")
+                or error_json.get("developerMessage")
+                or str(http_err)
+            )
+            print(f"❌ AQL HTTP error {response.status_code}: {message}")
+        except Exception:
+            print(f"❌ AQL HTTP error: {http_err}")
         return [], []
-    except Exception as e:
-        print(f"❌ AQL unexpected error: {e}")
-        return [], []
-
 
 def init_dynamic_table(columns, db_path, table_name="results"):
     conn = sqlite3.connect(db_path)

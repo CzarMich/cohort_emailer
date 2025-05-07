@@ -3,10 +3,11 @@ import yaml
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 
-#✅ Load environment variables from config/.env
-load_dotenv(dotenv_path=os.path.join("config", ".env"))
-#print("📦 Loading .env from:", os.path.join("config", ".env"))
-#print("👉 URL being used:", config["openehr"]["url"])
+# ✅ Load environment variables from ../config/.env (project root)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ENV_PATH = os.path.join(BASE_DIR, "config", ".env")
+load_dotenv(dotenv_path=ENV_PATH)
+
 
 
 def load_config(path=None):
@@ -14,7 +15,9 @@ def load_config(path=None):
     Load configuration from config/settings.yml and replace ${ENV_VAR} with .env values.
     """
     if path is None:
-        base_dir = os.path.dirname(__file__)
+        #base_dir = os.path.dirname(__file__)
+        # Go up one level from src to project root
+        base_dir = os.path.dirname(os.path.dirname(__file__))
         path = os.path.join(base_dir, "config", "settings.yml")
 
     with open(path, "r") as f:

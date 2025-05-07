@@ -1,20 +1,20 @@
 aql:
   base_query: |
-    SELECT
-      c/uid/value AS composition_id, 
-      v/commit_audit/time_committed/value AS TimeCommitted,
-      e/ehr_status/subject/external_ref/id/value AS subject_id,
-      c/context/other_context[at0001]/items[at0005]/value/value as consent_status,
-      c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[at0001]/value/value as consent_type,
-      c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[openEHR-EHR-CLUSTER.policy.v1]/items[at0005]/value/value as provision_type
+    SELECT e/ehr_status/subject/external_ref/id/value AS subjectID,
+        c/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/items[at0001]/value/value AS  encounter_id,
+        c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0002]/value/defining_code/code_string AS Condition_code,
+        c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0002]/value/value AS Condition_Display,
+        c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0002]/value/defining_code/terminology_id/value AS Condition_code_system, 
+        c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0003]/value/value AS Condition_recordedDate
     FROM EHR e
     CONTAINS VERSION v
-    CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]
-    WHERE c/name/value='Consents' 
-    AND c/content[openEHR-EHR-ACTION.consent.v1]/description[at0001]/items[openEHR-EHR-CLUSTER.consent.v1]/items[at0001]/value/value LIKE "Global*"
+    CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] 
+    WHERE c/name/value='Diagnose'
+    AND c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/value/defining_code/code_stringe LIKE 'Z51.6'
+    OR c/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/value/defining_code/code_stringe LIKE 'E78.4'
     AND v/commit_audit/time_committed/value <='{start_time}'
     AND v/commit_audit/time_committed/value < '{end_time}'
-    OFFSET 0 LIMIT 10
+    OFFSET 0 LIMIT 9000
 
 openehr:
   url: ${OPENEHR_URL}
@@ -38,19 +38,19 @@ email:
     Regards,
     System
   routing:
-    - field: "consent_type"
-      values: ["1*", "1"]
-      recipient: "recepient.1@email.eu"
+    - field: "Condition_code"
+      values: ["E*", "Z*"]
+      recipient: "anywar.michael@gmail.com"
   
     - field: "consent_type"
-      values: ["2*", "3*"]
-      recipient: "recepient.2@email.com"
+      values: ["E*", "Z*"]
+      recipient: "michael.anywar@uksh.de"
 
 job:
   db_path: "data/results.db"
-  default_start: "2025-01-01T00:00:00Z"
-  default_end: "2025-03-02T00:00:00Z"
-  use_end_time: false
+  default_start: "2019-01-01T00:00:00Z"
+  default_end: "2025-05-01T00:00:00Z"
+  use_end_time: true
   interval_hours: 3   
   polling: false
   polling_hours: 23          # Defines time window from start_time

@@ -35,7 +35,7 @@ config/.env
 data/
 aql_response.json
 settings.yml
-config/settings.yml
+#config/settings.yml
 
 # 🐍 Python Cache & Compiled Files
 __pycache__/

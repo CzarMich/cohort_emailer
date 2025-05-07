@@ -40,11 +40,11 @@ email:
   routing:
     - field: "Condition_code"
       values: ["E*", "Z*"]
-      recipient: "anywar.michael@gmail.com"
+      recipient: "reciepient1@mail.com"
   
     - field: "consent_type"
       values: ["E*", "Z*"]
-      recipient: "michael.anywar@uksh.de"
+      recipient: "mch@mail.eu"
 
 job:
   db_path: "data/results.db"

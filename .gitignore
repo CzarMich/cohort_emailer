@@ -3,7 +3,7 @@ venv/
 .env
 config/.env
 settings.yml
-config/settings.yml
+#config/settings.yml
 aql_response.json
 venv/
 .env
